@@ -1,0 +1,6 @@
+@THWEB_HostAddress = http://localhost:5114
+
+GET {{THWEB_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
