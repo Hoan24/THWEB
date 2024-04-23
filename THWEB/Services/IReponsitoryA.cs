@@ -5,8 +5,8 @@ namespace THWEB.Services
     {
         public List<AuthorVM>GetAuthors();
         AuthorVM GetAuthor(int id);
-        AuthorVM AddAuthor(AuthorVM author, int bookId);
-        void UpdateAuthor(int id,AuthorVM author);
+        AuthorVM AddAuthor(AuthorVM author);
+        void UpdateAuthor(AuthorVM author);
         void DeleteAuthor(int id);
     }
 }

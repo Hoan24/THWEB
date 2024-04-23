@@ -1,4 +1,5 @@
-﻿using THWEB.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using THWEB.Data;
 using THWEB.Models;
 
 namespace THWEB.Services
@@ -8,34 +9,19 @@ namespace THWEB.Services
         private readonly AppDbcontext _context;
         public ReA(AppDbcontext context) { _context = context; }
         // Trong class ReA
-        public AuthorVM AddAuthor(AuthorVM author, int bookId)
+        public AuthorVM AddAuthor(AuthorVM author)
         {
-            var newAuthor = new Authors
+            var _Author = new Authors
             {
                 AuthorId=author.AuthorId,
                 FullName = author.FullName
             };
-
-            
-            _context.authors.Add(newAuthor);
+            _context.authors.Add(_Author);
             _context.SaveChanges();
-
-            
-            int newAuthorId = newAuthor.AuthorId;   
-            
-            var newBookAuthor = new Book_Author
-            {
-                
-                BookId = bookId,
-                AuthorId = newAuthorId
-            };
-
-            _context.books_author.Add(newBookAuthor);
-            _context.SaveChanges();
-
+           
             return new AuthorVM
             {
-                AuthorId = newAuthorId,
+                AuthorId = author.AuthorId,
                 FullName = author.FullName
             };
         }
@@ -74,14 +60,12 @@ namespace THWEB.Services
             return result.ToList();
         }
 
-        void IReponsitoryA.UpdateAuthor(int id, AuthorVM author)
+        void IReponsitoryA.UpdateAuthor( AuthorVM author)
         {
-                var _author=_context.authors.SingleOrDefault(a=>a.AuthorId==id);
-            if(_author != null)
-            {
-                author.FullName = _author.FullName;
+            var _author = _context.authors.SingleOrDefault(a => a.AuthorId == author.AuthorId);
+                _author.FullName = author.FullName;
                 _context.SaveChanges();
-            }
+            
         }
     }
 }

@@ -7,7 +7,7 @@ namespace THWEB.Services
         public List<PublishersVM> GetALlPublishers();
         PublishersVM GetPublisher(int id);
         PublishersVM AddPublisher(PublishersVM publisher);
-        void UpdatePublisher(int id,PublishersVM publisher);
+        void UpdatePublisher(PublishersVM publisher);
         void DeletePublisher(int id);
     }
 }

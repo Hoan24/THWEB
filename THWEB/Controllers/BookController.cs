@@ -12,11 +12,11 @@ namespace THWEB.Controllers
         private readonly IReponsitoryB _repon;
         public BookController(IReponsitoryB repon) { _repon = repon; }
         [HttpGet]
-        public IActionResult GetAllBook()
+        public IActionResult GetAllBook(string ?search,string ? sort)
         {
             try
             {
-                return Ok(_repon.GetAllbooks());
+                return Ok(_repon.GetAllbooks(search,sort));
             }
             catch
             {
@@ -63,15 +63,11 @@ namespace THWEB.Controllers
             }
         }
         [HttpPut]
-        public IActionResult Update(int id, BooksVM books)
+        public IActionResult Update( BooksVM books)
         {
-            if (id != books.BookId)
-            {
-                return NoContent();
-            }
             try
             {
-                _repon.UpdateBook(id, books);
+                _repon.UpdateBook( books);
                 return Ok();
             }
             catch

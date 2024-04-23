@@ -62,15 +62,12 @@ namespace THWEB.Controllers
             }
         }
         [HttpPut]
-        public IActionResult Update(int id, PublishersVM publishersVM)
+        public IActionResult Update( PublishersVM publishersVM)
         {
-            if (id != publishersVM.PublisherId)
-            {
-                return NoContent();
-            }
+            
             try
             {
-                _repon.UpdatePublisher(id, publishersVM);
+                _repon.UpdatePublisher( publishersVM);
                 return Ok();
             }
             catch

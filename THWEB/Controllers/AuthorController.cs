@@ -36,11 +36,11 @@ namespace THWEB.Controllers
             }
         }
         [HttpPost]
-        public IActionResult PostAuthor(AuthorVM authorVM,int Bookid)
+        public IActionResult PostAuthor(AuthorVM authorVM)
         {
             try
             {
-                return Ok(_repon.AddAuthor(authorVM,Bookid));
+                return Ok(_repon.AddAuthor(authorVM));
             }
             catch
             {
@@ -61,15 +61,12 @@ namespace THWEB.Controllers
             }
         }
         [HttpPut]
-        public IActionResult Update(int id,AuthorVM authorVM)
+        public IActionResult Update(AuthorVM authorVM)
         {
-            if (id != authorVM.AuthorId)
-            {
-                return NoContent();
-            }
+           
                 try
             {
-                _repon.UpdateAuthor(id, authorVM);
+                _repon.UpdateAuthor( authorVM);
                 return Ok();
             }
             catch{

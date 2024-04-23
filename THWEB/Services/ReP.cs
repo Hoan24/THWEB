@@ -59,10 +59,10 @@ namespace THWEB.Services
             return null;
         }
 
-        public void UpdatePublisher(int id,PublishersVM publisher)
+        public void UpdatePublisher(PublishersVM publisher)
         {
-            var publ=_context.publishers.SingleOrDefault(p=>p.PublisherId==id);
-            publisher.Name = publisher.Name;
+            var publ=_context.publishers.SingleOrDefault(p=>p.PublisherId==publisher.PublisherId);
+            publ.Name = publisher.Name;
             _context.SaveChanges();
         }
     }

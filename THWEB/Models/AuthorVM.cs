@@ -7,5 +7,6 @@ namespace THWEB.Models
         public int AuthorId { get; set; }
         
         public string FullName { get; set; }
+        
     }
 }
