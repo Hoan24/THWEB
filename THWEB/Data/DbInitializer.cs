@@ -12,6 +12,17 @@ namespace THWEB.Data
         }
         public void Seed()
         {
+            _builder.Entity<User>(u =>
+            {
+                u.HasData(new User
+                {
+                    UserName="admin",
+                    Password="123",
+                    HoTen="Kim Van Hoan",
+
+                    Email="kimhoanbb321@gmail.com"
+                });
+            });
             _builder.Entity<Authors>(a =>
             {
                 a.HasData(new Authors

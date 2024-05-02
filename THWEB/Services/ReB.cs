@@ -9,7 +9,7 @@ namespace THWEB.Services
     public class ReB : IReponsitoryB
     {
         private readonly AppDbcontext _context;
-
+        public static int Page_size { get; set; } = 5;
         public ReB(AppDbcontext context) { _context = context; }
         // Trong class ReB
         public BooksVM AddBookWithAuthors(BooksVM book)
@@ -63,7 +63,7 @@ namespace THWEB.Services
             
         }
 
-        List<BooksVM> IReponsitoryB.GetAllbooks(string ? search, string ? sort)
+        List<BooksVM> IReponsitoryB.GetAllbooks(string ? search, string ? sort,int page=1)
         {
             var bookquery = _context.books.AsQueryable();
             if (!string.IsNullOrEmpty(search))
@@ -74,8 +74,8 @@ namespace THWEB.Services
             {
                 bookquery=_context.books.OrderBy(b=>b.Title);
             }
-            
-            var list = _context.books.Select(b => new BooksVM
+            bookquery=bookquery.Skip((page-1)*Page_size).Take(Page_size);
+            var list = bookquery. Select(b => new BooksVM
             {
                 BookId = b.BookId,
                 Title = b.Title,

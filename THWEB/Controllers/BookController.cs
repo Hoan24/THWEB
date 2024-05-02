@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using THWEB.Data;
 using THWEB.Models;
 using THWEB.Services;
 
@@ -6,17 +8,24 @@ namespace THWEB.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "admin")]
+
     public class BookController : ControllerBase
     {
-
+        private readonly AppDbcontext _appDbcontext;
+        private readonly ILogger<BookController> _logger;
         private readonly IReponsitoryB _repon;
-        public BookController(IReponsitoryB repon) { _repon = repon; }
+        public BookController(IReponsitoryB repon, ILogger<BookController> logger )
+        {
+            _repon = repon; _logger = logger;
+        }
         [HttpGet]
-        public IActionResult GetAllBook(string ?search,string ? sort)
+        [AllowAnonymous]
+        public IActionResult GetAllBook(string ?search,string ? sort,int page=1)
         {
             try
             {
-                return Ok(_repon.GetAllbooks(search,sort));
+                return Ok(_repon.GetAllbooks(search,sort,page));
             }
             catch
             {
@@ -24,6 +33,8 @@ namespace THWEB.Controllers
             }
         }
         [HttpGet("id")]
+        [AllowAnonymous]
+
         public IActionResult GetBookid(int id)
         {
             try

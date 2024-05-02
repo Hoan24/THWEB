@@ -13,7 +13,6 @@ namespace THWEB.Services
         {
             var _Author = new Authors
             {
-                AuthorId=author.AuthorId,
                 FullName = author.FullName
             };
             _context.authors.Add(_Author);
@@ -28,21 +27,28 @@ namespace THWEB.Services
 
         void IReponsitoryA.DeleteAuthor(int id)
         {
-            var _delete=_context.authors.SingleOrDefault(d=>d.AuthorId == id);
-            if (_delete != null)
+            var _deleteb_a=_context.books_author.SingleOrDefault(d=>d.AuthorId == id);
+            
+            if (_deleteb_a != null)
             {
-                _context.Remove(_delete);
+                _context.books_author.Remove(_deleteb_a);
                 _context.SaveChanges();
+                var _delete = _context.authors.SingleOrDefault(d => d.AuthorId == id);
+                if (_delete != null)
+                {
+                    _context.Remove(_delete);
+                    _context.SaveChanges();
+                }
             }
             
         }
 
-        AuthorVM IReponsitoryA.GetAuthor(int id)
+        A_BVM IReponsitoryA.GetAuthor(int id)
         {
             var author=_context.authors.SingleOrDefault(a=>a.AuthorId == id);
             if(author != null)
             {
-                return new AuthorVM { AuthorId = author.AuthorId ,FullName=author.FullName };
+                return new A_BVM { AuthorId = author.AuthorId ,FullName=author.FullName , BookName = author.Book_Authors.Select(b => b.Book.Title).ToList() };
             }
             else
             {
@@ -50,13 +56,14 @@ namespace THWEB.Services
             }
         }
 
-        List<AuthorVM> IReponsitoryA.GetAuthors()
+        List<A_BVM> IReponsitoryA.GetAuthors()
         {
-            var result = _context.authors.Select(a => new AuthorVM
+            var result = _context.authors.Select(a => new A_BVM
             {
                 AuthorId = a.AuthorId,
                 FullName = a.FullName,
-            });
+                BookName = a.Book_Authors.Select(b => b.Book.Title).ToList()
+            }) ;
             return result.ToList();
         }
 
