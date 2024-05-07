@@ -12,7 +12,7 @@ using THWEB.Data;
 namespace THWEB.Migrations.BookAuthConnectionMigrations
 {
     [DbContext(typeof(BookAuthConnection))]
-    [Migration("20240502032850_Create Auth Database")]
+    [Migration("20240507014244_Create Auth Database")]
     partial class CreateAuthDatabase
     {
         /// <inheritdoc />

@@ -12,59 +12,19 @@ namespace THWEB.Controllers
     public class AuthorController : ControllerBase
     {
         private readonly IReponsitoryA _repon;
-        private readonly UserManager<IdentityUser> _userManager;
         private readonly ITokenRepository _tokenRepository;
-        public AuthorController(IReponsitoryA repon,UserManager<IdentityUser> userManager,ITokenRepository tokenRepository) { _repon=repon; _userManager = userManager;_tokenRepository = tokenRepository; }
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("Register")]
-        public async Task<IActionResult> Register([FromBody] RegisterRequestDTO registerRequestDTO)
+
+        public AuthorController(
+            IReponsitoryA repon,
+            UserManager<IdentityUser> userManager,
+            RoleManager<IdentityRole> roleManager,
+            ITokenRepository tokenRepository)
         {
-            var identityUser = new IdentityUser
-            {
-                UserName = registerRequestDTO.Username,
-                Email = registerRequestDTO.Username
-            };
-            var identityResult = await _userManager.CreateAsync(identityUser, registerRequestDTO.Password);
-            if (identityResult.Succeeded)
-            {
-                //add roles to this user
-                if (registerRequestDTO.Roles != null && registerRequestDTO.Roles.Any())
-                {
-                    identityResult = await _userManager.AddToRolesAsync(identityUser, registerRequestDTO.Roles);
-                }
-                if (identityResult.Succeeded)
-                {
-                    return Ok("Register Successful! Let login!");
-                }
-            }
-            return BadRequest("Something wrong!");
+            _repon = repon;
+            
+            _tokenRepository = tokenRepository;
         }
-        [HttpPost]
-        [Route("Login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequestDTO loginRequestDTO)
-        {
-            var user = await _userManager.FindByEmailAsync(loginRequestDTO.Username);
-            if (user != null)
-            {
-                var checkPasswordResult = await
-                _userManager.CheckPasswordAsync(user, loginRequestDTO.Password);
-                if (checkPasswordResult)
-                { //get roles for this user
-                    var roles = await _userManager.GetRolesAsync(user);
-                    if (roles != null)
-                    { //create token
-                        var jwtToken = _tokenRepository.CreateJWTToken(user, roles.ToList());
-                        var response = new LoginResponseDTO
-                        {
-                            JwtToken = jwtToken
-                        };
-                        return Ok(response);
-                    }
-                }
-            }
-            return BadRequest("Username or password incorrect");
-        }
+       
         [HttpGet]
         [Authorize(Roles = "Read,Write")]
         public IActionResult GetAllAuthor()
@@ -93,6 +53,7 @@ namespace THWEB.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+        [Authorize(Roles = "Read,Write")]
         [HttpPost]
         public IActionResult PostAuthor(AuthorVM authorVM)
         {
@@ -105,6 +66,7 @@ namespace THWEB.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+        [Authorize(Roles = "Read,Write")]
         [HttpDelete]
         public IActionResult DeleteAuthor(int id)
         {

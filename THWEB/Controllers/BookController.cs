@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using THWEB.Data;
 using THWEB.Models;
@@ -8,19 +9,24 @@ namespace THWEB.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "admin")]
+    [Authorize]
 
     public class BookController : ControllerBase
     {
         private readonly AppDbcontext _appDbcontext;
         private readonly ILogger<BookController> _logger;
         private readonly IReponsitoryB _repon;
-        public BookController(IReponsitoryB repon, ILogger<BookController> logger )
+        private readonly ITokenRepository _tokenRepository;
+
+        public BookController(IReponsitoryB repon, ILogger<BookController> logger, ITokenRepository tokenRepository, UserManager<IdentityUser> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
             _repon = repon; _logger = logger;
+            _tokenRepository = tokenRepository;
         }
         [HttpGet]
-        [AllowAnonymous]
+        
+        [Authorize(Roles = "Read,Write")]
         public IActionResult GetAllBook(string ?search,string ? sort,int page=1)
         {
             try
@@ -33,8 +39,8 @@ namespace THWEB.Controllers
             }
         }
         [HttpGet("id")]
-        [AllowAnonymous]
-
+        
+        [Authorize(Roles = "Read,Write")]
         public IActionResult GetBookid(int id)
         {
             try
@@ -47,6 +53,7 @@ namespace THWEB.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+        [Authorize(Roles = "Read,Write")]
         [HttpPost]
         public IActionResult PostBook(BooksVM book)
         {
@@ -59,7 +66,7 @@ namespace THWEB.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-    
+        [Authorize(Roles = "Read,Write")]
         [HttpDelete]
         public IActionResult DeleteBook(int id)
         {
@@ -73,6 +80,7 @@ namespace THWEB.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+        [Authorize(Roles = "Read,Write")]
         [HttpPut]
         public IActionResult Update( BooksVM books)
         {

@@ -6,7 +6,7 @@ namespace THWEB.Data
     public class AppDbcontext : DbContext
     {
         public AppDbcontext(DbContextOptions<AppDbcontext>options):base(options) { }
-        public DbSet<User> Users { get; set; }
+        
         public DbSet<Authors> authors { get; set; }
         public DbSet<Publishers> publishers { get; set; }
         public DbSet<Books> books { get; set; }
@@ -27,12 +27,7 @@ namespace THWEB.Data
                 .WithMany(x => x.Books)
                 .HasForeignKey(x => x.PublisherId);
             new DbInitializer(builder).Seed();
-            builder.Entity<User>(entity =>
-            {
-                entity.HasIndex(e => e.UserName).IsUnique();
-                entity.Property(e=>e.HoTen).IsRequired().HasMaxLength(100);
-                entity.Property(e=>e.Email).IsRequired().HasMaxLength(100);
-            });
+            
         }
         
     }
