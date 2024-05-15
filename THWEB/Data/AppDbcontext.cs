@@ -11,6 +11,7 @@ namespace THWEB.Data
         public DbSet<Publishers> publishers { get; set; }
         public DbSet<Books> books { get; set; }
         public DbSet<Book_Author> books_author { get; set;}
+        public DbSet<Image> images { get; set; }
         
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -5,7 +5,7 @@ namespace THWEB.Services
     {
         public List<A_BVM>GetAuthors();
         A_BVM GetAuthor(int id);
-        AuthorVM AddAuthor(AuthorVM author);
+        addAuthorVM AddAuthor(addAuthorVM author);
         void UpdateAuthor(AuthorVM author);
         void DeleteAuthor(int id);
     }

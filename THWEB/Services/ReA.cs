@@ -9,7 +9,7 @@ namespace THWEB.Services
         private readonly AppDbcontext _context;
         public ReA(AppDbcontext context) { _context = context; }
         // Trong class ReA
-        public AuthorVM AddAuthor(AuthorVM author)
+        public addAuthorVM AddAuthor(addAuthorVM author)
         {
             var _Author = new Authors
             {
@@ -18,9 +18,9 @@ namespace THWEB.Services
             _context.authors.Add(_Author);
             _context.SaveChanges();
            
-            return new AuthorVM
+            return new addAuthorVM
             {
-                AuthorId = author.AuthorId,
+                
                 FullName = author.FullName
             };
         }
@@ -28,11 +28,19 @@ namespace THWEB.Services
         void IReponsitoryA.DeleteAuthor(int id)
         {
             var _deleteb_a=_context.books_author.SingleOrDefault(d=>d.AuthorId == id);
-            
             if (_deleteb_a != null)
             {
                 _context.books_author.Remove(_deleteb_a);
                 _context.SaveChanges();
+                var _delete = _context.authors.SingleOrDefault(d => d.AuthorId == id);
+                if (_delete != null)
+                {
+                    _context.Remove(_delete);
+                    _context.SaveChanges();
+                }
+            }
+            else
+            {
                 var _delete = _context.authors.SingleOrDefault(d => d.AuthorId == id);
                 if (_delete != null)
                 {

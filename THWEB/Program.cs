@@ -1,18 +1,23 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
+using Serilog;
 using System.Text;
-using System.Text.Json.Serialization;
 using THWEB.Data;
 using THWEB.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
+// Add services to the container.
+var _logger = new LoggerConfiguration()
+ .WriteTo.Console()// ghi ra console 
+ .WriteTo.File("Logs/Book_log.txt", rollingInterval: RollingInterval.Minute) //ghi ra file lưu trong thư mục Logs 
+ .MinimumLevel.Information() 
+ .CreateLogger();
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(_logger);
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -36,7 +41,7 @@ builder.Services.AddSwaggerGen(options =>
                     Type = ReferenceType.SecurityScheme,
                     Id = JwtBearerDefaults.AuthenticationScheme
                 },
-                Scheme = "Oauth2",
+                Scheme = "oauth2",
                 Name = JwtBearerDefaults.AuthenticationScheme,
                 In = ParameterLocation.Header
             },
@@ -45,15 +50,15 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-builder.Services.AddScoped<IReponsitoryA, ReA>();
-builder.Services.AddScoped<IReponsitoryB, ReB>();
-builder.Services.AddScoped<IReponsitoryP, ReP>();
-builder.Services.AddScoped<ITokenRepository, TokenRepository>();
-builder.Services.AddIdentityCore<IdentityUser>()
-.AddRoles<IdentityRole>()
-.AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("Book")
-.AddEntityFrameworkStores<BookAuthConnection>()
-.AddDefaultTokenProviders();
+// Register DbContext for AppDbcontext
+builder.Services.AddDbContext<AppDbcontext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefConnect")));
+
+// Register DbContext for BookAuthConnection
+builder.Services.AddDbContext<BookAuthConnection>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("BookAuthCon")));
+
+// Register Identity services
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = false;
@@ -63,16 +68,19 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     options.Password.RequiredLength = 6;
     options.Password.RequiredUniqueChars = 1;
 })
-.AddEntityFrameworkStores<AppDbcontext>()
+.AddEntityFrameworkStores<BookAuthConnection>()
 .AddDefaultTokenProviders();
 
-builder.Services.AddDbContext<AppDbcontext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefConnect")));
+builder.Services.AddScoped<IReponsitoryA, ReA>();
+builder.Services.AddScoped<IReponsitoryB, ReB>();
+builder.Services.AddScoped<IReponsitoryP, ReP>();
+builder.Services.AddScoped<IImageRepon, ReImage>();
+builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 
-builder.Services.AddDbContext<BookAuthConnection>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("BookAuthCon")));
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+builder.Services.AddAuthentication(options =>{ options .DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {

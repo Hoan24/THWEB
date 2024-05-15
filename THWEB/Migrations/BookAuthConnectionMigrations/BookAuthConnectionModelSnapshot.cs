@@ -51,15 +51,15 @@ namespace THWEB.Migrations.BookAuthConnectionMigrations
                     b.HasData(
                         new
                         {
-                            Id = "004c7e80 - 7dfc - 44be - 8952 - 2c7130898655",
-                            ConcurrencyStamp = "004c7e80 - 7dfc - 44be - 8952 - 2c7130898655",
+                            Id = "004c7e807dfc44be89522c7130898655",
+                            ConcurrencyStamp = "004c7e807dfc44be89522c7130898655",
                             Name = "Read",
                             NormalizedName = "READ"
                         },
                         new
                         {
-                            Id = "71e282d3 - 76ca - 485e-b094 - eff019287fa5",
-                            ConcurrencyStamp = "71e282d3 - 76ca - 485e-b094 - eff019287fa5",
+                            Id = "71e282d376ca485eb094eff019287fa5",
+                            ConcurrencyStamp = "71e282d376ca485eb094eff019287fa5",
                             Name = "Write",
                             NormalizedName = "WRITE"
                         });

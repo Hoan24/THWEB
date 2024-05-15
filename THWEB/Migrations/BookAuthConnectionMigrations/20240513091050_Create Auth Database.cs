@@ -163,8 +163,8 @@ namespace THWEB.Migrations.BookAuthConnectionMigrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "004c7e80 - 7dfc - 44be - 8952 - 2c7130898655", "004c7e80 - 7dfc - 44be - 8952 - 2c7130898655", "Read", "READ" },
-                    { "71e282d3 - 76ca - 485e-b094 - eff019287fa5", "71e282d3 - 76ca - 485e-b094 - eff019287fa5", "Write", "WRITE" }
+                    { "004c7e807dfc44be89522c7130898655", "004c7e807dfc44be89522c7130898655", "Read", "READ" },
+                    { "71e282d376ca485eb094eff019287fa5", "71e282d376ca485eb094eff019287fa5", "Write", "WRITE" }
                 });
 
             migrationBuilder.CreateIndex(

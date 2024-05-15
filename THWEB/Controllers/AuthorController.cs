@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using THWEB.Models;
 using THWEB.Services;
 
@@ -8,24 +10,20 @@ namespace THWEB.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    
     public class AuthorController : ControllerBase
     {
         private readonly IReponsitoryA _repon;
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly ITokenRepository _tokenRepository;
 
-        public AuthorController(
-            IReponsitoryA repon,
-            UserManager<IdentityUser> userManager,
-            RoleManager<IdentityRole> roleManager,
-            ITokenRepository tokenRepository)
+        public AuthorController(IReponsitoryA repon, UserManager<IdentityUser> userManager, ITokenRepository tokenRepository)
         {
             _repon = repon;
-            
+            _userManager = userManager;
             _tokenRepository = tokenRepository;
         }
        
-        [HttpGet]
+        [HttpGet("get-all-author")]
         [Authorize(Roles = "Read,Write")]
         public IActionResult GetAllAuthor()
         {
@@ -33,41 +31,42 @@ namespace THWEB.Controllers
             {
                 return Ok(_repon.GetAuthors());
             }
-            catch
+            catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-        [HttpGet("id")]
-        [Authorize(Roles = "Read,Write")]
 
+        [HttpGet("{id}")]
+        [Authorize(Roles = "Read,Write")]
         public IActionResult GetAuthor(int id)
         {
             try
             {
-                
                 return Ok(_repon.GetAuthor(id));
             }
-            catch
+            catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
         [Authorize(Roles = "Read,Write")]
         [HttpPost]
-        public IActionResult PostAuthor(AuthorVM authorVM)
+        public IActionResult PostAuthor(addAuthorVM authorVM)
         {
             try
             {
                 return Ok(_repon.AddAuthor(authorVM));
             }
-            catch
+            catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
         [Authorize(Roles = "Read,Write")]
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult DeleteAuthor(int id)
         {
             try
@@ -75,21 +74,23 @@ namespace THWEB.Controllers
                 _repon.DeleteAuthor(id);
                 return Ok();
             }
-            catch
+            catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
+        [Authorize(Roles = "Read,Write")]
         [HttpPut]
         public IActionResult Update(AuthorVM authorVM)
         {
-           
-                try
+            try
             {
-                _repon.UpdateAuthor( authorVM);
+                _repon.UpdateAuthor(authorVM);
                 return Ok();
             }
-            catch{
+            catch (Exception)
+            {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }

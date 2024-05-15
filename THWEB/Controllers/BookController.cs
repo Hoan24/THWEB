@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 using THWEB.Data;
 using THWEB.Models;
 using THWEB.Services;
@@ -26,12 +27,17 @@ namespace THWEB.Controllers
         }
         [HttpGet]
         
-        [Authorize(Roles = "Read,Write")]
+        [Authorize(Roles = "Read")]
         public IActionResult GetAllBook(string ?search,string ? sort,int page=1)
         {
             try
             {
-                return Ok(_repon.GetAllbooks(search,sort,page));
+                _logger.LogInformation("GetAll Book Action method was invoked");
+                _logger.LogWarning("This is a warning log");
+                _logger.LogError("This is a error log");
+                var allBooks = _repon.GetAllbooks(search, sort, page);
+                _logger.LogInformation($"Finished GetAllBook request with data { JsonSerializer.Serialize(allBooks)}");
+                return Ok(allBooks);
             }
             catch
             {
@@ -53,8 +59,9 @@ namespace THWEB.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-        [Authorize(Roles = "Read,Write")]
         [HttpPost]
+        [Authorize(Roles = "Read,Write")]
+
         public IActionResult PostBook(BooksVM book)
         {
             try
